@@ -1,5 +1,6 @@
 import sys
 import shutil
+import os
 
 builtin_commands = [
     "echo",
@@ -17,13 +18,13 @@ def main():
         if command.startswith('exit'):
             break
 
-        if command.startswith("echo"):
+        elif command.startswith("echo"):
             # Extract the argument after "echo"
             argument = command[5:] if len(command) > 4 else ""
             print(argument)
             continue
         
-        if command.startswith("type"):
+        elif command.startswith("type"):
             sub_command = command[5:] if len(command) > 4 else ""
             if sub_command == "":
                 print("")
@@ -35,7 +36,12 @@ def main():
                 print(f"{sub_command}: not found")
             continue
 
-        print(f"{command}: command not found")
+        elif shutil.which(command.split(' ')[0]) != None:
+            sub_commands = command.split(' ')
+            os.system(f"{command[0]} {' '.join(command[1:])}")
+        
+        else:
+            print(f"{command}: command not found")
 
 
 if __name__ == "__main__":
