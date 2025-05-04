@@ -1,5 +1,10 @@
 import sys
 
+builtin_commands = [
+    "echo",
+    "type",
+    "exit"
+]
 
 def main():
     while True:
@@ -14,7 +19,17 @@ def main():
             print(argument)
             continue
         
-        if command == "exit 0":
+        if command.startswith("type"):
+            sub_command = command[5:] if len(command) > 4 else ""
+            if sub_command == "":
+                print("")
+            elif sub_command in builtin_commands:
+                print(f"{sub_command} is a shell builtin")
+            else:
+                print(f"{sub_command}: not found")
+            continue
+        
+        if command == "exit 0" or command == "exit":
             break
 
         print(f"{command}: command not found")
