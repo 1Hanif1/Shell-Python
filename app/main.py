@@ -1,4 +1,5 @@
 import sys
+import shutil
 
 builtin_commands = [
     "echo",
@@ -13,6 +14,9 @@ def main():
         # Wait for user input
         command = input()
 
+        if command.startswith('exit'):
+            break
+
         if command.startswith("echo"):
             # Extract the argument after "echo"
             argument = command[5:] if len(command) > 4 else ""
@@ -25,12 +29,11 @@ def main():
                 print("")
             elif sub_command in builtin_commands:
                 print(f"{sub_command} is a shell builtin")
+            elif path := shutil.which(sub_command):
+                print(f"{sub_command} is {path}")
             else:
                 print(f"{sub_command}: not found")
             continue
-        
-        if command == "exit 0" or command == "exit":
-            break
 
         print(f"{command}: command not found")
 
