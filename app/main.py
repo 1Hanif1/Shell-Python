@@ -37,8 +37,8 @@ def main():
             continue
 
         elif shutil.which(command.split(' ')[0]) != None:
-            sub_commands = command.split(' ')
-            os.system(f"{command[0]} {' '.join(command[1:])}")
+            main_command = command.split(' ')[0]
+            os.system(f"{main_command} {' '.join(command.split(' ')[1:])}")
         
         else:
             print(f"{command}: command not found")
