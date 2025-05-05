@@ -2,7 +2,7 @@ import sys
 import shutil
 import os
 
-BUILTIN_COMMANDS = ["echo", "type", "exit"]
+BUILTIN_COMMANDS = ["echo", "type", "exit", "pwd"]
 
 def shell_prompt():
     return input("$ ")
