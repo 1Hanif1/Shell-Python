@@ -2,47 +2,67 @@ import sys
 import shutil
 import os
 
-builtin_commands = [
-    "echo",
-    "type",
-    "exit"
-]
+BUILTIN_COMMANDS = ["echo", "type", "exit"]
+
+def shell_prompt():
+    return input("$ ")
+
+def handle_echo(args):
+    print(' '.join(args))
+
+def handle_type(args):
+    if not args:
+        print("")
+        return
+    
+    for sub_command in args:
+        if sub_command in BUILTIN_COMMANDS:
+            print(f"{sub_command} is a shell builtin")
+        elif path := shutil.which(sub_command):
+            print(f"{sub_command} is {path}")
+        else:
+            print(f"{sub_command}: not found")
+
+def handle_pwd():
+    print(os.getcwd())
+    pass
+
+def run_external_command(command_parts):
+    try:
+        os.system(' '.join(command_parts))
+    except Exception as e:
+        print(f"Error running command: {e}")
+
+def execute_command(command):
+    if not command.strip():
+        return
+
+    parts = command.strip().split()
+    cmd, args = parts[0], parts[1:]
+
+    if cmd == "exit":
+        sys.exit(0)
+    elif cmd == "echo":
+        handle_echo(args)
+    elif cmd == "type":
+        handle_type(args)
+    elif cmd == "pwd":
+        handle_pwd()
+    elif shutil.which(cmd):
+        run_external_command(parts)
+    else:
+        print(f"{cmd}: command not found")
 
 def main():
     while True:
-        # Uncomment this block to pass the first stage
-        sys.stdout.write("$ ")
-        # Wait for user input
-        command = input()
-
-        if command.startswith('exit'):
+        try:
+            command = shell_prompt()
+            execute_command(command)
+        except KeyboardInterrupt:
+            print("\nUse 'exit' to quit the shell.")
+        except EOFError:
+            print("\nExiting.")
             break
-
-        elif command.startswith("echo"):
-            # Extract the argument after "echo"
-            argument = command[5:] if len(command) > 4 else ""
-            print(argument)
-            continue
-        
-        elif command.startswith("type"):
-            sub_command = command[5:] if len(command) > 4 else ""
-            if sub_command == "":
-                print("")
-            elif sub_command in builtin_commands:
-                print(f"{sub_command} is a shell builtin")
-            elif path := shutil.which(sub_command):
-                print(f"{sub_command} is {path}")
-            else:
-                print(f"{sub_command}: not found")
-            continue
-
-        elif shutil.which(command.split(' ')[0]) != None:
-            main_command = command.split(' ')[0]
-            os.system(f"{main_command} {' '.join(command.split(' ')[1:])}")
-        
-        else:
-            print(f"{command}: command not found")
-
 
 if __name__ == "__main__":
     main()
