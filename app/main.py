@@ -29,7 +29,10 @@ def handle_pwd():
 
 def handle_cd(args):
     directory = args[0]
-    os.chdir(directory)
+    try:
+        os.chdir(directory)
+    except FileNotFoundError:
+        print(f"/{directory}: No such file or directory")
     # print(handle_pwd())
 
 def run_external_command(command_parts):
