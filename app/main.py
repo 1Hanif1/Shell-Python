@@ -2,10 +2,11 @@ import sys
 import shutil
 import os
 
-BUILTIN_COMMANDS = ["echo", "type", "exit", "pwd"]
+BUILTIN_COMMANDS = ["echo", "type", "exit", "pwd", "cd"]
 
 def shell_prompt():
-    return input("$ ")
+    # return input(f"{os.getcwd()}$ ")
+    return input(f"$ ")
 
 def handle_echo(args):
     print(' '.join(args))
@@ -25,7 +26,11 @@ def handle_type(args):
 
 def handle_pwd():
     print(os.getcwd())
-    pass
+
+def handle_cd(args):
+    directory = args[0]
+    os.chdir(directory)
+    # print(handle_pwd())
 
 def run_external_command(command_parts):
     try:
@@ -48,6 +53,8 @@ def execute_command(command):
         handle_type(args)
     elif cmd == "pwd":
         handle_pwd()
+    elif cmd == "cd":
+        handle_cd(args)
     elif shutil.which(cmd):
         run_external_command(parts)
     else:
